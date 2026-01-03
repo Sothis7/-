@@ -1,44 +1,17 @@
-<script>
-// 检查URL参数，如果是从浏览器直接访问，重定向到正确页面
-(function() {
-    const params = new URLSearchParams(window.location.search);
-    const hasParams = params.has('name') || params.has('date') || params.has('time') || params.has('room');
-    
-    // 如果不是从重定向来的，且有参数，则重定向
-    if (hasParams && !sessionStorage.getItem('redirected')) {
-        const name = params.get('name') || '';
-        const date = params.get('date') || '2026-01-01';
-        const time = params.get('time') || '晚餐 17:30';
-        const room = params.get('room') || '钓鱼城';
-        
-        // 构建分享卡片信息
-        const shareTitle = name ? `${name}，诚挚邀请您光临` : '诚挚邀请您光临';
-        const shareDescription = `已为您预订${date} ${time}的餐位，请您按时间就餐！`;
-        
-        // 动态更新meta标签
-        document.querySelector('meta[property="og:title"]').setAttribute('content', shareTitle);
-        document.querySelector('meta[property="og:description"]').setAttribute('content', shareDescription);
-        document.querySelector('meta[name="description"]').setAttribute('content', shareDescription);
-        
-        // 标记已重定向
-        sessionStorage.setItem('redirected', 'true');
-    }
-})();
-</script>
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>用餐邀请函 - 福州川和李记</title>
+    <title>邀请函 - 福州川和李记</title>
     
-    <!-- 微信分享卡片关键meta标签 - 必须静态设置 -->
+    <!-- 关键：默认的微信分享卡片信息（会被JS更新） -->
     <meta property="og:title" content="诚挚邀请您光临">
     <meta property="og:description" content="已为您预订2026-01-01星期四17:30的餐位，请您按时间就餐！">
-    <meta property="og:image" content="https://您的域名/restaurant-share-image.jpg"> <!-- 替换为您的图片URL -->
-    <meta property="og:url" content="https://您的域名/invitation.html"> <!-- 替换为您的页面URL -->
+    <meta property="og:image" content="https://您的域名/restaurant-share-image.jpg"> <!-- 请替换为您的餐厅图片URL -->
+    <meta property="og:url" content="">
     <meta property="og:type" content="website">
+    <meta property="og:site_name" content="福州川和李记">
     <meta name="description" content="诚挚邀请您光临福州川和李记">
     
     <!-- 微信特定标签 -->
@@ -206,38 +179,150 @@
         </div>
     </div>
 
+    <!-- 关键：在页面头部立即执行JavaScript -->
     <script>
-        // 获取URL参数
-        function getUrlParams() {
-            const params = new URLSearchParams(window.location.search);
-            return {
-                name: params.get('name') || '',
-                date: params.get('date') || '2026-01-01',
-                time: params.get('time') || '晚餐 17:30',
-                room: params.get('room') || '钓鱼城'
-            };
-        }
-        
+        // 第一部分：立即执行的代码（在页面加载前执行）
+        (function() {
+            // 获取URL参数
+            function getUrlParams() {
+                const params = {};
+                const queryString = window.location.search.substring(1);
+                const vars = queryString.split('&');
+                for (let i = 0; i < vars.length; i++) {
+                    const pair = vars[i].split('=');
+                    if (pair[0]) {
+                        params[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+                    }
+                }
+                return params;
+            }
+            
+            // 格式化日期为星期几
+            function formatDateToWeekday(dateStr) {
+                try {
+                    const date = new Date(dateStr);
+                    const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+                    return weekdays[date.getDay()];
+                } catch (e) {
+                    return '';
+                }
+            }
+            
+            // 主函数：更新分享卡片信息
+            function updateShareCard() {
+                const params = getUrlParams();
+                
+                // 获取参数值
+                const name = params.name || '';
+                const date = params.date || '2026-01-01';
+                const time = params.time || '晚餐 17:30';
+                const room = params.room || '钓鱼城';
+                
+                // 格式化日期
+                const weekday = formatDateToWeekday(date);
+                const displayDate = date + (weekday ? weekday : '');
+                
+                // 构建分享标题和描述（完全按照您的图片格式）
+                let shareTitle = '诚挚邀请您光临';
+                if (name) {
+                    shareTitle = name + '，诚挚邀请您光临';
+                }
+                
+                let shareDescription = '已为您预订' + displayDate + time + '的餐位，请您按时间就餐！';
+                if (room && room !== '钓鱼城') {
+                    shareDescription += '（预订房间：' + room + '）';
+                }
+                
+                // 立即更新所有相关的meta标签
+                const metaTags = document.querySelectorAll('meta[property^="og:"], meta[property^="wechat:"], meta[name="description"]');
+                
+                metaTags.forEach(tag => {
+                    const property = tag.getAttribute('property');
+                    const name = tag.getAttribute('name');
+                    
+                    if (property === 'og:title' || property === 'wechat:title') {
+                        tag.setAttribute('content', shareTitle);
+                    } else if (property === 'og:description' || property === 'wechat:description' || name === 'description') {
+                        tag.setAttribute('content', shareDescription);
+                    } else if (property === 'og:url') {
+                        tag.setAttribute('content', window.location.href);
+                    }
+                });
+                
+                // 更新页面标题
+                document.title = (name ? name + ' - ' : '') + '用餐邀请函 - 福州川和李记';
+                
+                // 记录日志（可选）
+                console.log('微信分享卡片信息已更新:');
+                console.log('标题:', shareTitle);
+                console.log('描述:', shareDescription);
+            }
+            
+            // 立即执行更新
+            updateShareCard();
+            
+            // 设置一个延迟再次更新，确保信息被正确设置
+            setTimeout(updateShareCard, 100);
+            
+        })();
+    </script>
+
+    <!-- 第二部分：常规页面功能 -->
+    <script>
         // 页面初始化
         window.onload = function() {
+            // 获取URL参数
+            function getUrlParams() {
+                const params = {};
+                const queryString = window.location.search.substring(1);
+                const vars = queryString.split('&');
+                for (let i = 0; i < vars.length; i++) {
+                    const pair = vars[i].split('=');
+                    if (pair[0]) {
+                        params[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+                    }
+                }
+                return params;
+            }
+            
             const params = getUrlParams();
             
-            // 填充数据
+            // 填充页面数据
             if (params.date) document.getElementById('displayDate').textContent = params.date;
             if (params.time) document.getElementById('displayTime').textContent = params.time;
             if (params.room) document.getElementById('displayRoom').textContent = params.room;
             
             // 如果有客户名，更新欢迎语
             if (params.name) {
-                document.getElementById('welcomeText').textContent = `${params.name}，诚挚邀请您光临`;
+                document.getElementById('welcomeText').textContent = params.name + '，诚挚邀请您光临';
             }
+            
+            // 设置餐厅固定信息（请修改为您的实际信息）
+            document.getElementById('displayAddress').textContent = '福州市鼓楼区八一七中路123号';
+            document.getElementById('displayPhone').textContent = '0591-83796018';
         };
         
         // 餐厅导航功能
         function openRestaurantNavigation() {
+            // 餐厅信息 - 请修改为您的实际信息
             const restaurantName = "福州川和李记";
+            const restaurantAddress = "福州市鼓楼区八一七中路123号";
+            
+            // 腾讯地图URL
             const tencentMapUrl = `https://apis.map.qq.com/uri/v1/search?keyword=${encodeURIComponent(restaurantName)}&region=福州`;
-            window.open(tencentMapUrl, '_blank');
+            
+            // 尝试打开腾讯地图App
+            const tencentMapScheme = `qqmap://map/search?keyword=${encodeURIComponent(restaurantName)}&region=福州`;
+            
+            // 先尝试打开App
+            window.location.href = tencentMapScheme;
+            
+            // 如果3秒后还在当前页面，则打开网页版
+            setTimeout(function() {
+                if (!document.hidden) {
+                    window.open(tencentMapUrl, '_blank');
+                }
+            }, 3000);
         }
         
         // 分享到微信功能
@@ -249,12 +334,13 @@
                 showWeChatShareGuide();
             } else {
                 // 不在微信中，复制链接并提示
-                copyToClipboard();
+                copyInvitationLink();
             }
         }
         
         // 显示微信分享引导
         function showWeChatShareGuide() {
+            // 创建引导界面
             const guideHTML = `
                 <div style="
                     position: fixed;
@@ -267,6 +353,7 @@
                     display: flex;
                     justify-content: center;
                     align-items: center;
+                    font-family: 'Microsoft YaHei', sans-serif;
                 ">
                     <div style="
                         background: white;
@@ -276,10 +363,27 @@
                         text-align: center;
                     ">
                         <h3 style="color: #1a3d6d; margin-bottom: 20px;">分享到微信</h3>
-                        <div style="font-size: 14px; color: #555; line-height: 1.6;">
-                            请点击右上角"..."<br>
-                            选择"发送给朋友"<br>
-                            或"分享到朋友圈"
+                        <div style="position: relative; margin: 20px 0;">
+                            <div style="
+                                position: absolute;
+                                top: -40px;
+                                right: -40px;
+                                width: 60px;
+                                height: 60px;
+                                background: #07c160;
+                                border-radius: 50%;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                color: white;
+                                font-size: 28px;
+                                font-weight: bold;
+                            ">⋯</div>
+                            <div style="font-size: 14px; color: #555; line-height: 1.6;">
+                                1. 点击右上角"..."<br>
+                                2. 选择"发送给朋友"<br>
+                                3. 或选择"分享到朋友圈"
+                            </div>
                         </div>
                         <p style="font-size: 12px; color: #999; margin-top: 20px;">
                             分享将以卡片形式展示
@@ -297,10 +401,12 @@
                 </div>
             `;
             
+            // 添加引导到页面
             const guideDiv = document.createElement('div');
             guideDiv.innerHTML = guideHTML;
             document.body.appendChild(guideDiv.firstElementChild);
             
+            // 5秒后自动关闭
             setTimeout(() => {
                 if (document.body.contains(guideDiv.firstElementChild)) {
                     document.body.removeChild(guideDiv.firstElementChild);
@@ -308,22 +414,77 @@
             }, 5000);
         }
         
-        // 复制链接到剪贴板
-        function copyToClipboard() {
+        // 复制邀请函链接
+        function copyInvitationLink() {
             const link = window.location.href;
             
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(link).then(() => {
-                    alert('✅ 邀请函链接已复制！\n\n请切换到微信，粘贴并发送给朋友\n\n分享将以卡片形式展示');
+                    showCustomAlert(`
+                        <div style="text-align: center; padding: 20px;">
+                            <h3 style="color: #07c160; margin-bottom: 15px;">✅ 链接已复制！</h3>
+                            <p>请按以下步骤分享：</p>
+                            <ol style="text-align: left; margin: 15px 0; padding-left: 20px;">
+                                <li><strong>切换到微信</strong></li>
+                                <li>在对话框<strong>粘贴并发送</strong>此链接</li>
+                                <li>点击发送出去的链接，打开后<strong>再次点击分享</strong></li>
+                            </ol>
+                            <p style="font-size: 12px; color: #666; margin-top: 10px;">
+                                提示：通过微信收藏打开后再分享，效果更佳。
+                            </p>
+                        </div>
+                    `);
                 }).catch(() => {
-                    fallbackCopy(link);
+                    fallbackCopyText(link);
                 });
             } else {
-                fallbackCopy(link);
+                fallbackCopyText(link);
             }
         }
         
-        function fallbackCopy(text) {
+        // 显示自定义提示框
+        function showCustomAlert(htmlContent) {
+            const alertDiv = document.createElement('div');
+            alertDiv.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.7);
+                    z-index: 9999;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                ">
+                    <div style="
+                        background: white;
+                        padding: 25px;
+                        border-radius: 12px;
+                        max-width: 320px;
+                        width: 90%;
+                        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                    ">
+                        ${htmlContent}
+                        <div style="text-align: center; margin-top: 20px;">
+                            <button onclick="this.parentElement.parentElement.parentElement.remove()" style="
+                                padding: 10px 25px;
+                                background: #1a3d6d;
+                                color: white;
+                                border: none;
+                                border-radius: 8px;
+                                cursor: pointer;
+                            ">确定</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(alertDiv.firstElementChild);
+        }
+        
+        // 兼容老浏览器的复制方法
+        function fallbackCopyText(text) {
             const textArea = document.createElement('textarea');
             textArea.value = text;
             textArea.style.position = 'fixed';
@@ -335,9 +496,27 @@
             
             try {
                 document.execCommand('copy');
-                alert('✅ 邀请函链接已复制！\n\n请切换到微信，粘贴并发送给朋友\n\n分享将以卡片形式展示');
+                showCustomAlert(`
+                    <div style="text-align: center; padding: 20px;">
+                        <h3 style="color: #07c160; margin-bottom: 15px;">✅ 链接已复制！</h3>
+                        <p>请切换到微信，粘贴链接发送给朋友。</p>
+                        <p style="font-size: 12px; color: #666; margin-top: 10px;">
+                            分享将以卡片形式展示。
+                        </p>
+                    </div>
+                `);
             } catch (err) {
-                alert('❌ 复制失败，请手动复制：\n\n' + text);
+                showCustomAlert(`
+                    <div style="text-align: center; padding: 20px;">
+                        <h3 style="color: #ff5722; margin-bottom: 15px;">❌ 复制失败</h3>
+                        <p>请手动复制链接：</p>
+                        <input type="text" value="${text}" readonly 
+                               style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px;">
+                        <p style="font-size: 12px; color: #666; margin-top: 10px;">
+                            请将此链接发送到微信中。
+                        </p>
+                    </div>
+                `);
             }
             
             document.body.removeChild(textArea);
@@ -345,4 +524,3 @@
     </script>
 </body>
 </html>
-
