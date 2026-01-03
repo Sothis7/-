@@ -3,251 +3,387 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>邀请函</title>
+    <title>用餐邀请函 - 福州川和李记</title>
+    <!-- 微信分享卡片关键meta标签 -->
+    <meta property="og:title" content="用餐邀请函 - 福州川和李记">
+    <meta property="og:description" content="诚挚邀请您前来用餐，期待您的光临！">
+    <meta property="og:image" content="https://example.com/restaurant-logo.jpg"> <!-- 请替换为您的餐厅logo URL -->
+    <meta property="og:url" content="https://your-domain.com/invitation.html">
+    <meta name="description" content="福州川和李记用餐邀请函">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: "Microsoft YaHei", sans-serif;
             background-color: #f5f5f5;
-            color: #333;
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            margin: 0;
             padding: 20px;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
         }
+        
         .invitation-card {
             background: white;
-            width: 100%;
             max-width: 400px;
+            width: 100%;
             border-radius: 12px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
             padding: 30px 25px;
             text-align: center;
         }
-        .header h1 {
+        
+        .invitation-header h1 {
             color: #1a3d6d;
             font-size: 2.2em;
-            margin-bottom: 5px;
+            margin: 0;
             font-weight: bold;
         }
-        .header .en {
+        
+        .invitation-en {
             color: #888;
             font-size: 0.9em;
             letter-spacing: 2px;
-            margin-bottom: 20px;
+            margin-top: 5px;
         }
-        .header .slogan {
-            font-size: 1.1em;
+        
+        .invitation-slogan {
             color: #555;
-            margin: 20px 0 30px;
+            font-size: 1.1em;
+            margin: 25px 0;
             padding-bottom: 20px;
             border-bottom: 1px dashed #eee;
         }
-        .info-section {
+        
+        .invitation-details {
             text-align: left;
             margin: 25px 0;
         }
-        .info-row {
+        
+        .detail-row {
             display: flex;
             margin-bottom: 15px;
-            align-items: flex-start;
+            align-items: center;
         }
-        .info-label {
+        
+        .detail-label {
             width: 100px;
             color: #666;
             flex-shrink: 0;
         }
-        .info-value {
+        
+        .detail-value {
             color: #222;
             font-weight: 500;
             flex-grow: 1;
         }
-        .nav-buttons {
-            display: flex;
-            gap: 15px;
-            margin: 30px 0 20px;
+        
+        .restaurant-info {
+            background: #f0f7ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 25px 0;
+            border-left: 4px solid #1a3d6d;
         }
-        .nav-btn {
-            flex: 1;
+        
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 30px 0 20px 0;
+        }
+        
+        .action-btn {
             display: block;
             padding: 16px;
             border-radius: 8px;
             text-decoration: none;
-            font-size: 1.1em;
+            font-size: 16px;
             font-weight: bold;
             text-align: center;
-            transition: all 0.3s ease;
-            background-color: #1a3d6d;
-            color: white;
+            transition: all 0.3s;
             border: none;
             cursor: pointer;
         }
-        .nav-btn.wechat {
-            background-color: #07c160;
+        
+        .navi-btn {
+            background: #1a3d6d;
+            color: white;
         }
-        .nav-btn:hover {
+        
+        .share-btn {
+            background: #07c160;
+            color: white;
+        }
+        
+        .action-btn:hover {
             opacity: 0.9;
             transform: translateY(-2px);
         }
-        .footer {
-            margin-top: 25px;
+        
+        .footer-note {
             color: #999;
-            font-size: 0.85em;
+            font-size: 12px;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
         }
-        .cooperate {
-            font-size: 0.8em;
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
             color: #666;
-            margin-top: 15px;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .nav-option {
+            flex: 1;
+            padding: 12px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .nav-option:hover {
+            background: #e9ecef;
         }
     </style>
 </head>
 <body>
-    <div class="invitation-card">
-        <div class="header">
+    <div class="invitation-card" id="invitationContent" style="display: none;">
+        <div class="invitation-header">
             <h1>邀请函</h1>
-            <div class="en">INVITATION</div>
-            <div class="slogan">诚挚邀请您光临</div>
+            <div class="invitation-en">INVITATION</div>
+            <div class="invitation-slogan">诚挚邀请您光临</div>
         </div>
-
-        <div class="info-section">
-            <!-- 客户信息 -->
-            <div class="info-row">
-                <div class="info-label">预订日期</div>
-                <div class="info-value" id="date">2026-01-15</div>
+        
+        <div class="invitation-details">
+            <div class="restaurant-info">
+                <div class="detail-row">
+                    <div class="detail-label">预订日期</div>
+                    <div class="detail-value" id="displayDate">2026-01-01</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">就餐时间</div>
+                    <div class="detail-value" id="displayTime">晚餐 17:30</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">预订房间</div>
+                    <div class="detail-value" id="displayRoom">钓鱼城</div>
+                </div>
             </div>
-            <div class="info-row">
-                <div class="info-label">就餐时间</div>
-                <div class="info-value" id="time">晚餐 18:30</div>
+            
+            <div class="detail-row">
+                <div class="detail-label">餐厅地址</div>
+                <div class="detail-value" id="displayAddress">福州川和李记</div>
             </div>
-            <div class="info-row">
-                <div class="info-label">预订房间</div>
-                <div class="info-value" id="room">钓鱼城</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">餐厅地址</div>
-                <div class="info-value" id="address">福州市鼓楼区八一七中路123号</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">餐厅电话</div>
-                <div class="info-value" id="phone">0591-83796018</div>
+            <div class="detail-row">
+                <div class="detail-label">餐厅电话</div>
+                <div class="detail-value" id="displayPhone">0591-83796018</div>
             </div>
         </div>
-
-        <!-- 导航按钮区域（完全按图片样式） -->
-        <div class="nav-buttons">
-            <!-- 方案一：最简单 - 直接打开地图搜索页面 -->
-            <button class="nav-btn" onclick="openMapSearch()">
-                餐厅导航
+        
+        <!-- 智能导航模块 -->
+        <div class="button-group">
+            <button class="action-btn navi-btn" onclick="smartNavigation()">
+                🗺️ 智能导航至餐厅
             </button>
             
-            <!-- 方案二：微信内优化 - 打开腾讯地图 -->
-            <button class="nav-btn wechat" onclick="openWeChatMap()">
-                微信导航
+            <!-- 导航选项 -->
+            <div class="nav-buttons">
+                <div class="nav-option" onclick="openMap('baidu')">百度地图</div>
+                <div class="nav-option" onclick="openMap('amap')">高德地图</div>
+                <div class="nav-option" onclick="openMap('tencent')">腾讯地图</div>
+            </div>
+            
+            <button class="action-btn share-btn" onclick="wechatShare()">
+                💌 分享给微信好友
             </button>
         </div>
-
-        <!-- 合作方信息（完全按图片样式） -->
-        <div class="cooperate">
-            迅手提供运营支持
+        
+        <div class="footer-note">
+            <p>迅手提供运营支持</p>
         </div>
     </div>
-
+    
+    <div class="loading" id="loading">
+        正在加载邀请函...
+    </div>
+    
     <script>
-        // 获取URL参数并填充页面
+        // 获取URL参数
         function getUrlParams() {
             const params = new URLSearchParams(window.location.search);
             return {
                 name: params.get('name') || '',
-                date: params.get('date') || '2026-01-15',
-                time: params.get('time') || '晚餐 18:30',
+                date: params.get('date') || '2026-01-01',
+                time: params.get('time') || '晚餐 17:30',
                 room: params.get('room') || '钓鱼城'
             };
         }
         
-        // 页面初始化
-        window.onload = function() {
+        // 显示邀请函
+        function displayInvitation() {
             const params = getUrlParams();
             
-            // 填充数据
-            if (params.date) document.getElementById('date').textContent = params.date;
-            if (params.time) document.getElementById('time').textContent = params.time;
-            if (params.room) document.getElementById('room').textContent = params.room;
+            // 设置页面标题
             if (params.name) {
-                document.querySelector('.slogan').textContent = `${params.name}，诚挚邀请您光临`;
+                document.title = params.name + ' - 用餐邀请函';
+                // 动态更新分享标题
+                updateShareMeta('title', params.name + ' - 用餐邀请函');
             }
-        };
-        
-        // 最简单的导航方案：直接在地图中搜索餐厅地址
-        function openMapSearch() {
-            // 请在这里填写您的餐厅地址
-            const restaurantName = "川和李记";
-            const restaurantAddress = "福州市鼓楼区梁厝路华雄大厦3号楼一层";
             
-            // 创建搜索关键词（餐厅名+地址）
-            const searchKeyword = `${restaurantName} ${restaurantAddress}`;
+            // 填充数据
+            document.getElementById('displayDate').textContent = params.date;
+            document.getElementById('displayTime').textContent = params.time;
+            document.getElementById('displayRoom').textContent = params.room;
             
-            // 编码搜索关键词
-            const encodedSearch = encodeURIComponent(searchKeyword);
+            // 餐厅固定信息
+            document.getElementById('displayAddress').textContent = '福州川和李记';
+            document.getElementById('displayPhone').textContent = '0591-83796018';
             
-            // 同时提供多种地图选择，让用户手机自动选择
-            const maps = [
-                // 高德地图（最常用）
-                `https://m.amap.com/search?query=${encodedSearch}`,
-                
-                // 百度地图
-                `https://map.baidu.com/mobile/webapp/search/search/qt=s&wd=${encodedSearch}`,
-                
-                // 腾讯地图
-                `https://apis.map.qq.com/uri/v1/search?keyword=${encodedSearch}&region=福州`
-            ];
+            // 如果是特定客户，添加欢迎语
+            if (params.name) {
+                const slogan = document.querySelector('.invitation-slogan');
+                slogan.textContent = params.name + '，诚挚邀请您光临';
+                // 更新分享描述
+                updateShareMeta('description', params.name + '，诚挚邀请您光临福州川和李记');
+            }
             
-            // 尝试打开最常用的地图（高德）
-            window.location.href = maps[0];
+            // 显示邀请函，隐藏加载中
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('invitationContent').style.display = 'block';
         }
         
-        // 微信内优化的导航方案
-        function openWeChatMap() {
-            // 请在这里填写您的餐厅地址
-            const restaurantName = "川和李记";
-            const restaurantAddress = "福州市鼓楼区梁厝路华雄大厦3号楼一层";
+        // 更新微信分享的meta信息
+        function updateShareMeta(type, content) {
+            if (type === 'title') {
+                document.querySelector('meta[property="og:title"]').setAttribute('content', content);
+                document.title = content;
+            } else if (type === 'description') {
+                document.querySelector('meta[property="og:description"]').setAttribute('content', content);
+                document.querySelector('meta[name="description"]').setAttribute('content', content);
+            }
+        }
+        
+        // 智能导航功能
+        function smartNavigation() {
+            const restaurantInfo = {
+                name: "福州川和李记",
+                address: "福州市鼓楼区八一七中路123号",
+                city: "福州"
+            };
             
-            // 检测是否在微信内
-            const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
+            // 检测运行环境
+            const ua = navigator.userAgent;
+            const isWeChat = /MicroMessenger/i.test(ua);
+            const isiOS = /iPad|iPhone|iPod/.test(ua);
+            const isAndroid = /Android/.test(ua);
+            
+            let navUrl;
             
             if (isWeChat) {
-                // 在微信内，使用腾讯地图（微信内置地图）
-                const searchKeyword = encodeURIComponent(`${restaurantName} ${restaurantAddress}`);
-                window.location.href = `https://apis.map.qq.com/uri/v1/search?keyword=${searchKeyword}&region=福州`;
+                // 微信内优先使用腾讯地图
+                navUrl = `https://apis.map.qq.com/uri/v1/search?keyword=${encodeURIComponent(restaurantInfo.name)}&region=${restaurantInfo.city}`;
+            } else if (isiOS) {
+                // iOS设备优先使用高德地图
+                navUrl = `iosamap://search?keyword=${encodeURIComponent(restaurantInfo.name)}&city=${restaurantInfo.city}`;
+            } else if (isAndroid) {
+                // Android设备使用高德地图
+                navUrl = `androidamap://search?keyword=${encodeURIComponent(restaurantInfo.name)}&city=${restaurantInfo.city}`;
             } else {
-                // 不在微信内，提示用户
-                alert('请在微信中打开以获得最佳导航体验');
-                
-                // 还是提供普通地图搜索
-                openMapSearch();
+                // 其他情况使用百度地图网页版
+                navUrl = `https://map.baidu.com/search/${encodeURIComponent(restaurantInfo.name + ' ' + restaurantInfo.address)}`;
+            }
+            
+            // 尝试打开导航
+            window.location.href = navUrl;
+            
+            // 备用方案：3秒后如果还在当前页面，使用通用网页版
+            setTimeout(() => {
+                if (!document.hidden) {
+                    window.open(`https://map.baidu.com/search/${encodeURIComponent(restaurantInfo.name)}`, '_blank');
+                }
+            }, 3000);
+        }
+        
+        // 手动选择地图导航
+        function openMap(type) {
+            const restaurantInfo = {
+                name: "福州川和李记",
+                address: "福州市鼓楼区八一七中路123号",
+                city: "福州"
+            };
+            
+            const maps = {
+                baidu: `https://map.baidu.com/search/${encodeURIComponent(restaurantInfo.name)}`,
+                amap: `https://uri.amap.com/search?keyword=${encodeURIComponent(restaurantInfo.name)}&city=${restaurantInfo.city}`,
+                tencent: `https://apis.map.qq.com/uri/v1/search?keyword=${encodeURIComponent(restaurantInfo.name)}&region=${restaurantInfo.city}`
+            };
+            
+            window.open(maps[type], '_blank');
+        }
+        
+        // 微信分享功能（优化版）
+        function wechatShare() {
+            // 如果是在微信浏览器内
+            if (/MicroMessenger/i.test(navigator.userAgent)) {
+                alert('请点击右上角"..."，选择"发送给朋友"分享邀请函\n\n分享提示：邀请函将以卡片形式展示，包含餐厅信息和导航功能');
+            } else {
+                // 非微信环境，使用Web Share API或复制链接
+                if (navigator.share) {
+                    navigator.share({
+                        title: document.querySelector('meta[property="og:title"]').content,
+                        text: document.querySelector('meta[property="og:description"]').content,
+                        url: window.location.href
+                    }).then(() => {
+                        console.log('分享成功');
+                    }).catch((error) => {
+                        console.log('分享失败', error);
+                        copyToClipboard(window.location.href);
+                    });
+                } else {
+                    // 复制链接到剪贴板
+                    copyToClipboard(window.location.href);
+                }
             }
         }
         
-        // 备用方案：如果上述方法都不行，使用这个超级简单的方法
-        function openSimpleMap() {
-            // 请在这里填写您的餐厅地址
-            const restaurantAddress = "福州市鼓楼区梁厝路华雄大厦3号楼一层";
-            
-            // 最简单的方法：直接打开百度地图搜索
-            window.location.href = `https://map.baidu.com/search/${encodeURIComponent(restaurantAddress)}`;
+        // 复制到剪贴板辅助函数
+        function copyToClipboard(text) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('邀请函链接已复制到剪贴板！\n\n链接：' + text + '\n\n请粘贴到微信中发送给朋友');
+                }).catch(err => {
+                    fallbackCopy(text);
+                });
+            } else {
+                fallbackCopy(text);
+            }
         }
         
-        // 如果需要，可以在这里添加一个备用的简单导航按钮（调试用）
-        // document.addEventListener('DOMContentLoaded', function() {
-        //     // 可以添加第三个按钮作为备用
-        //     // const backupBtn = document.createElement('button');
-        //     // backupBtn.className = 'nav-btn';
-        //     // backupBtn.textContent = '备用导航';
-        //     // backupBtn.onclick = openSimpleMap;
-        //     // document.querySelector('.nav-buttons').appendChild(backupBtn);
-        // });
+        function fallbackCopy(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                alert('邀请函链接已复制到剪贴板！\n\n请粘贴到微信中发送给朋友');
+            } catch (err) {
+                alert('复制失败，请手动复制链接：\n\n' + text);
+            }
+            document.body.removeChild(textArea);
+        }
+        
+        // 页面加载完成后显示邀请函
+        window.onload = displayInvitation;
     </script>
 </body>
 </html>
-
-
