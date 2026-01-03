@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>邀请函 - 福州川和李记</title>
+    <title>用餐邀请函 - 福州川和李记</title>
     <!-- 微信分享卡片关键meta标签 -->
     <meta property="og:title" content="用餐邀请函 - 福州川和李记">
     <meta property="og:description" content="诚挚邀请您前来用餐，期待您的光临！">
-    <meta property="og:image" content="https://example.com/restaurant-invitation.jpg"> <!-- 请替换为您的餐厅图片URL -->
+    <meta property="og:image" content="https://example.com/restaurant-share-image.jpg"> <!-- 请替换为您的餐厅分享图片URL -->
     <meta property="og:url" content="">
+    <meta property="og:type" content="website">
     <meta name="description" content="福州川和李记用餐邀请函">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -78,11 +79,11 @@
         }
         .button-group {
             display: flex;
-            flex-direction: column;
             gap: 15px;
             margin: 30px 0 20px;
         }
         .btn {
+            flex: 1;
             display: block;
             padding: 16px;
             border-radius: 8px;
@@ -93,13 +94,17 @@
             transition: all 0.3s ease;
             border: none;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         .btn-navi {
-            background: #07c160; /* 改为绿色，匹配图片中的餐厅导航按钮 */
+            background: #07c160; /* 绿色按钮 - 餐厅导航 */
             color: white;
         }
         .btn-share {
-            background: #1a3d6d; /* 改为深蓝色，作为次要按钮 */
+            background: #1a3d6d; /* 深蓝色按钮 - 分享到微信 */
             color: white;
         }
         .btn:hover {
@@ -110,11 +115,11 @@
             margin-top: 25px;
             color: #999;
             font-size: 12px;
+            text-align: center;
         }
         .cooperate {
             font-size: 0.85em;
             color: #666;
-            margin-top: 5px;
         }
     </style>
 </head>
@@ -154,16 +159,16 @@
             </div>
         </div>
 
-        <!-- 按钮区域 - 按图片样式保留两个按钮 -->
+        <!-- 按钮区域 - 完全按照图片样式 -->
         <div class="button-group">
-            <!-- 主导航按钮（绿色） -->
-            <button class="btn btn-navi" onclick="openTencentMap()">
-                🗺️ 餐厅导航
+            <!-- 左侧：餐厅导航按钮（绿色） -->
+            <button class="btn btn-navi" onclick="openRestaurantNavigation()">
+                <span>🗺️</span> 餐厅导航
             </button>
             
-            <!-- 分享按钮（深蓝色） -->
-            <button class="btn btn-share" onclick="wechatShare()">
-                💌 微信导航
+            <!-- 右侧：分享到微信按钮（深蓝色） -->
+            <button class="btn btn-share" onclick="shareToWeChat()">
+                <span>💌</span> 分享到微信
             </button>
         </div>
 
@@ -174,7 +179,7 @@
     </div>
 
     <script>
-        // 动态设置og:url为当前页面URL
+        // 动态设置og:url为当前页面URL，确保微信分享卡片正确显示
         document.querySelector('meta[property="og:url"]').setAttribute('content', window.location.href);
         
         // 获取URL参数
@@ -196,29 +201,33 @@
             if (params.date) document.getElementById('displayDate').textContent = params.date;
             if (params.time) document.getElementById('displayTime').textContent = params.time;
             if (params.room) document.getElementById('displayRoom').textContent = params.room;
+            
+            // 设置餐厅固定信息
+            document.getElementById('displayAddress').textContent = '福州市鼓楼区八一七中路123号';
+            document.getElementById('displayPhone').textContent = '0591-83796018';
+            
+            // 如果有客户名，更新欢迎语和分享信息
             if (params.name) {
                 document.getElementById('welcomeText').textContent = `${params.name}，诚挚邀请您光临`;
-                // 更新分享标题
-                document.title = `${params.name} - 用餐邀请函`;
-                document.querySelector('meta[property="og:title"]').setAttribute('content', `${params.name} - 用餐邀请函`);
-                document.querySelector('meta[property="og:description"]').setAttribute('content', `${params.name}，诚挚邀请您光临福州川和李记`);
+                
+                // 动态更新分享卡片信息
+                updateShareCardInfo(params.name, params.date, params.time, params.room);
             }
             
-            // 更新分享描述
-            const shareDescription = `预订日期：${params.date} ${params.time} | 预订房间：${params.room}`;
-            document.querySelector('meta[name="description"]').setAttribute('content', shareDescription);
+            // 初始化微信分享配置
+            initWeChatShare();
         };
         
-        // 腾讯地图导航（主导航按钮）
-        function openTencentMap() {
+        // 餐厅导航功能
+        function openRestaurantNavigation() {
             // 餐厅信息 - 请修改为您的实际信息
             const restaurantName = "福州川和李记";
             const restaurantAddress = "福州市鼓楼区八一七中路123号";
             
-            // 腾讯地图URL格式
+            // 腾讯地图URL
             const tencentMapUrl = `https://apis.map.qq.com/uri/v1/search?keyword=${encodeURIComponent(restaurantName)}&region=福州`;
             
-            // 尝试直接打开腾讯地图App
+            // 尝试打开腾讯地图App
             const tencentMapScheme = `qqmap://map/search?keyword=${encodeURIComponent(restaurantName)}&region=福州`;
             
             // 先尝试打开App
@@ -226,77 +235,146 @@
             
             // 如果3秒后还在当前页面，则打开网页版
             setTimeout(function() {
-                if (document.hasFocus()) {
+                if (!document.hidden) {
                     window.open(tencentMapUrl, '_blank');
                 }
             }, 3000);
         }
         
-        // 微信分享功能（优化版）
-        function wechatShare() {
-            // 检测是否在微信内
+        // 初始化微信分享配置
+        function initWeChatShare() {
+            // 检查是否在微信中
             const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
             
             if (isWeChat) {
-                // 微信内，提示用户使用微信自带分享功能
-                alert('请点击右上角"..."，然后选择"发送给朋友"或"分享到朋友圈"\n\n分享将以卡片形式展示，包含您的邀请信息。');
-                
-                // 可选：如果后期需要更高级的分享控制，可以接入微信JS-SDK
-                // 需要先配置微信JS-SDK，这里只提供提示
+                console.log('微信环境检测到，分享功能已启用');
             } else {
-                // 非微信环境，提供复制链接功能
-                copyToClipboard(window.location.href);
+                console.log('非微信环境，分享功能将使用备用方案');
             }
         }
         
-        // 复制到剪贴板辅助函数
-        function copyToClipboard(text) {
+        // 分享到微信功能
+        function shareToWeChat() {
+            const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
+            
+            if (isWeChat) {
+                // 在微信中，提示用户使用微信原生分享
+                showWeChatShareGuide();
+            } else {
+                // 不在微信中，复制链接并提示用户到微信中分享
+                copyLinkAndShowGuide();
+            }
+        }
+        
+        // 显示微信分享引导
+        function showWeChatShareGuide() {
+            // 创建一个半透明遮罩层
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                z-index: 9999;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            `;
+            
+            // 创建引导内容
+            const guideContent = document.createElement('div');
+            guideContent.style.cssText = `
+                background: white;
+                padding: 30px;
+                border-radius: 15px;
+                text-align: center;
+                max-width: 300px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            `;
+            
+            guideContent.innerHTML = `
+                <h3 style="color: #1a3d6d; margin-bottom: 15px;">分享到微信</h3>
+                <p style="margin-bottom: 20px; color: #555;">请点击右上角"..."按钮</p>
+                <div style="position: relative; margin: 20px 0;">
+                    <div style="position: absolute; top: -30px; right: -30px; width: 60px; height: 60px; background: #07c160; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px;">⋯</div>
+                    <div style="font-size: 14px; color: #888;">然后选择"发送给朋友"或"分享到朋友圈"</div>
+                </div>
+                <p style="font-size: 12px; color: #999; margin-top: 20px;">分享将以卡片形式展示您的邀请信息</p>
+                <button id="closeGuide" style="margin-top: 20px; padding: 10px 20px; background: #1a3d6d; color: white; border: none; border-radius: 8px; cursor: pointer;">我知道了</button>
+            `;
+            
+            overlay.appendChild(guideContent);
+            document.body.appendChild(overlay);
+            
+            // 点击关闭引导
+            document.getElementById('closeGuide').onclick = function() {
+                document.body.removeChild(overlay);
+            };
+            
+            // 5秒后自动关闭
+            setTimeout(() => {
+                if (document.body.contains(overlay)) {
+                    document.body.removeChild(overlay);
+                }
+            }, 5000);
+        }
+        
+        // 复制链接并显示引导
+        function copyLinkAndShowGuide() {
+            const link = window.location.href;
+            
             if (navigator.clipboard) {
-                navigator.clipboard.writeText(text).then(() => {
-                    alert('邀请函链接已复制到剪贴板！\n\n请将链接粘贴到微信中发送给朋友\n\n分享将以卡片形式展示');
+                navigator.clipboard.writeText(link).then(() => {
+                    alert('✅ 邀请函链接已复制到剪贴板！\n\n请将链接粘贴到微信中发送给朋友\n\n分享将以卡片形式展示');
                 }).catch(err => {
-                    fallbackCopy(text);
+                    fallbackCopyText(link);
                 });
             } else {
-                fallbackCopy(text);
+                fallbackCopyText(link);
             }
         }
         
-        function fallbackCopy(text) {
+        // 兼容老浏览器的复制方法
+        function fallbackCopyText(text) {
             const textArea = document.createElement('textarea');
             textArea.value = text;
             document.body.appendChild(textArea);
             textArea.select();
             try {
                 document.execCommand('copy');
-                alert('邀请函链接已复制到剪贴板！\n\n请将链接粘贴到微信中发送给朋友\n\n分享将以卡片形式展示');
+                alert('✅ 邀请函链接已复制到剪贴板！\n\n请将链接粘贴到微信中发送给朋友\n\n分享将以卡片形式展示');
             } catch (err) {
-                alert('复制失败，请手动复制链接：\n\n' + text);
+                alert('❌ 复制失败，请手动复制链接：\n\n' + text + '\n\n请将此链接发送到微信中');
             }
             document.body.removeChild(textArea);
         }
         
-        // 动态更新分享卡片信息
-        function updateShareCard() {
-            const params = getUrlParams();
-            const currentUrl = window.location.href;
+        // 更新微信分享卡片信息
+        function updateShareCardInfo(name, date, time, room) {
+            // 更新页面标题
+            document.title = `${name} - 用餐邀请函`;
             
-            // 动态更新og:url
-            document.querySelector('meta[property="og:url"]').setAttribute('content', currentUrl);
+            // 更新分享卡片标题
+            document.querySelector('meta[property="og:title"]').setAttribute('content', `${name} - 用餐邀请函`);
             
-            // 如果有客户名，更新标题和描述
-            if (params.name) {
-                const title = `${params.name} - 用餐邀请函`;
-                const description = `${params.name}，诚挚邀请您光临福州川和李记，预订时间：${params.date} ${params.time}`;
-                
-                document.querySelector('meta[property="og:title"]').setAttribute('content', title);
-                document.querySelector('meta[property="og:description"]').setAttribute('content', description);
-                document.querySelector('meta[name="description"]').setAttribute('content', description);
-            }
+            // 更新分享卡片描述
+            const description = `${name}，诚挚邀请您光临福州川和李记\n预订时间：${date} ${time}\n预订房间：${room}`;
+            document.querySelector('meta[property="og:description"]').setAttribute('content', description);
+            document.querySelector('meta[name="description"]').setAttribute('content', description);
+            
+            // 更新分享卡片URL
+            document.querySelector('meta[property="og:url"]').setAttribute('content', window.location.href);
         }
         
-        // 页面加载时更新分享卡片
-        updateShareCard();
+        // 确保页面加载后更新分享信息
+        setTimeout(() => {
+            const params = getUrlParams();
+            if (params.name) {
+                updateShareCardInfo(params.name, params.date, params.time, params.room);
+            }
+        }, 100);
     </script>
 </body>
 </html>
