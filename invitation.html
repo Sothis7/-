@@ -181,8 +181,8 @@
         // 最简单的导航方案：直接在地图中搜索餐厅地址
         function openMapSearch() {
             // 请在这里填写您的餐厅地址
-            const restaurantName = "福州川和李记";
-            const restaurantAddress = "福州市鼓楼区八一七中路123号";
+            const restaurantName = "川和李记";
+            const restaurantAddress = "福州市鼓楼区梁厝路华雄大厦3号楼一层";
             
             // 创建搜索关键词（餐厅名+地址）
             const searchKeyword = `${restaurantName} ${restaurantAddress}`;
@@ -209,7 +209,7 @@
         // 微信内优化的导航方案
         function openWeChatMap() {
             // 请在这里填写您的餐厅地址
-            const restaurantName = "川和李记-重庆生态火锅";
+            const restaurantName = "川和李记";
             const restaurantAddress = "福州市鼓楼区梁厝路华雄大厦3号楼一层";
             
             // 检测是否在微信内
@@ -231,7 +231,7 @@
         // 备用方案：如果上述方法都不行，使用这个超级简单的方法
         function openSimpleMap() {
             // 请在这里填写您的餐厅地址
-            const restaurantAddress = "福州市鼓楼区八一七中路123号";
+            const restaurantAddress = "福州市鼓楼区梁厝路华雄大厦3号楼一层";
             
             // 最简单的方法：直接打开百度地图搜索
             window.location.href = `https://map.baidu.com/search/${encodeURIComponent(restaurantAddress)}`;
@@ -249,4 +249,5 @@
     </script>
 </body>
 </html>
+
 
