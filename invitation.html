@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用餐邀请函 - 福州川和李记</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background-color: #f5f5f5;
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .invitation-card {
+            background: white;
+            max-width: 400px;
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            padding: 30px 25px;
+            text-align: center;
+        }
+        
+        /* 和图片完全一致的样式 */
+        .invitation-header h1 {
+            color: #1a3d6d;
+            font-size: 2.2em;
+            margin: 0;
+            font-weight: bold;
+        }
+        
+        .invitation-en {
+            color: #888;
+            font-size: 0.9em;
+            letter-spacing: 2px;
+            margin-top: 5px;
+        }
+        
+        .invitation-slogan {
+            color: #555;
+            font-size: 1.1em;
+            margin: 25px 0;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed #eee;
+        }
+        
+        .invitation-details {
+            text-align: left;
+            margin: 25px 0;
+        }
+        
+        .detail-row {
+            display: flex;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        
+        .detail-label {
+            width: 100px;
+            color: #666;
+            flex-shrink: 0;
+        }
+        
+        .detail-value {
+            color: #222;
+            font-weight: 500;
+            flex-grow: 1;
+        }
+        
+        .restaurant-info {
+            background: #f0f7ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 25px 0;
+            border-left: 4px solid #1a3d6d;
+        }
+        
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 30px 0 20px 0;
+        }
+        
+        .action-btn {
+            display: block;
+            padding: 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .navi-btn {
+            background: #1a3d6d;
+            color: white;
+        }
+        
+        .share-btn {
+            background: #07c160;
+            color: white;
+        }
+        
+        .action-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        .footer-note {
+            color: #999;
+            font-size: 12px;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="invitation-card" id="invitationContent" style="display: none;">
+        <div class="invitation-header">
+            <h1>邀请函</h1>
+            <div class="invitation-en">INVITATION</div>
+            <div class="invitation-slogan">诚挚邀请您光临</div>
+        </div>
+        
+        <div class="invitation-details">
+            <div class="restaurant-info">
+                <div class="detail-row">
+                    <div class="detail-label">预订日期</div>
+                    <div class="detail-value" id="displayDate">2026-01-01</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">就餐时间</div>
+                    <div class="detail-value" id="displayTime">晚餐 17:30</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">预订房间</div>
+                    <div class="detail-value" id="displayRoom">钓鱼城</div>
+                </div>
+            </div>
+            
+            <div class="detail-row">
+                <div class="detail-label">餐厅地址</div>
+                <div class="detail-value" id="displayAddress">福州川和李记</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">餐厅电话</div>
+                <div class="detail-value" id="displayPhone">0591-83796018</div>
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <a href="https://map.baidu.com/search/福州川和李记" class="action-btn navi-btn" target="_blank">
+                🗺️ 导航至商家
+            </a>
+            <a href="javascript:void(0);" class="action-btn share-btn" onclick="shareInvitation()">
+                💌 分享给朋友
+            </a>
+        </div>
+        
+        <div class="footer-note">
+            <p>迅手提供运营支持</p>
+        </div>
+    </div>
+    
+    <div class="loading" id="loading">
+        正在加载邀请函...
+    </div>
+    
+    <script>
+        // 获取URL参数
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                name: params.get('name') || '',
+                date: params.get('date') || '2026-01-01',
+                time: params.get('time') || '晚餐 17:30',
+                room: params.get('room') || '钓鱼城'
+            };
+        }
+        
+        // 显示邀请函
+        function displayInvitation() {
+            const params = getUrlParams();
+            
+            // 设置页面标题
+            if (params.name) {
+                document.title = params.name + ' - 用餐邀请函';
+            }
+            
+            // 填充数据
+            document.getElementById('displayDate').textContent = params.date;
+            document.getElementById('displayTime').textContent = params.time;
+            document.getElementById('displayRoom').textContent = params.room;
+            
+            // 餐厅固定信息
+            document.getElementById('displayAddress').textContent = '福州川和李记';
+            document.getElementById('displayPhone').textContent = '0591-83796018';
+            
+            // 如果是特定客户，可以在这里添加欢迎语
+            if (params.name) {
+                const slogan = document.querySelector('.invitation-slogan');
+                slogan.textContent = params.name + '，诚挚邀请您光临';
+            }
+            
+            // 显示邀请函，隐藏加载中
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('invitationContent').style.display = 'block';
+        }
+        
+        // 分享功能
+        function shareInvitation() {
+            if (navigator.share) {
+                navigator.share({
+                    title: '用餐邀请函 - 福州川和李记',
+                    text: '诚邀您前来用餐',
+                    url: window.location.href
+                });
+            } else {
+                alert('请点击右上角"..."，选择"发送给朋友"分享邀请函');
+            }
+        }
+        
+        // 页面加载完成后显示邀请函
+        window.onload = displayInvitation;
+    </script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+/* 基础样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+/* 按钮基础样式 */
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-primary {
+    background-color: #1a3d6d;
+    color: white;
+}
+
+.btn-success {
+    background-color: #07c160;
+    color: white;
+}
+
+/* 卡片样式 */
+.card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    padding: 25px;
+}
+
+/* 响应式调整 */
+@media (max-width: 480px) {
+    .invitation-card {
+        padding: 20px 15px;
+        margin: 10px;
+    }
+    
+    .invitation-header h1 {
+        font-size: 1.8em;
+    }
+    
+    .action-btn {
+        padding: 14px;
+        font-size: 15px;
+    }
+}
