@@ -1,3 +1,31 @@
+<script>
+// 检查URL参数，如果是从浏览器直接访问，重定向到正确页面
+(function() {
+    const params = new URLSearchParams(window.location.search);
+    const hasParams = params.has('name') || params.has('date') || params.has('time') || params.has('room');
+    
+    // 如果不是从重定向来的，且有参数，则重定向
+    if (hasParams && !sessionStorage.getItem('redirected')) {
+        const name = params.get('name') || '';
+        const date = params.get('date') || '2026-01-01';
+        const time = params.get('time') || '晚餐 17:30';
+        const room = params.get('room') || '钓鱼城';
+        
+        // 构建分享卡片信息
+        const shareTitle = name ? `${name}，诚挚邀请您光临` : '诚挚邀请您光临';
+        const shareDescription = `已为您预订${date} ${time}的餐位，请您按时间就餐！`;
+        
+        // 动态更新meta标签
+        document.querySelector('meta[property="og:title"]').setAttribute('content', shareTitle);
+        document.querySelector('meta[property="og:description"]').setAttribute('content', shareDescription);
+        document.querySelector('meta[name="description"]').setAttribute('content', shareDescription);
+        
+        // 标记已重定向
+        sessionStorage.setItem('redirected', 'true');
+    }
+})();
+</script>
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -317,3 +345,4 @@
     </script>
 </body>
 </html>
+
