@@ -3,15 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>用餐邀请函 - 您的餐厅名</title>
+    <title>邀请函</title>
     <style>
-        /* 基础样式 - 保持与您图片一致的风格 */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: "Microsoft YaHei", sans-serif;
             background-color: #f5f5f5;
             color: #333;
-            line-height: 1.6;
             padding: 20px;
             display: flex;
             justify-content: center;
@@ -24,7 +22,6 @@
             max-width: 400px;
             border-radius: 12px;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
             padding: 30px 25px;
             text-align: center;
         }
@@ -43,47 +40,36 @@
         .header .slogan {
             font-size: 1.1em;
             color: #555;
-            margin: 20px 0 30px 0;
+            margin: 20px 0 30px;
             padding-bottom: 20px;
             border-bottom: 1px dashed #eee;
         }
-        .details {
+        .info-section {
             text-align: left;
             margin: 25px 0;
         }
-        .detail-item {
-            margin-bottom: 15px;
+        .info-row {
             display: flex;
+            margin-bottom: 15px;
+            align-items: flex-start;
         }
-        .detail-item .label {
+        .info-label {
             width: 100px;
             color: #666;
             flex-shrink: 0;
         }
-        .detail-item .value {
+        .info-value {
             color: #222;
             font-weight: 500;
             flex-grow: 1;
         }
-        .guest-info {
-            background-color: #f0f7ff;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #1a3d6d;
-            margin: 25px 0;
-            text-align: left;
-        }
-        .guest-info .value {
-            font-size: 1.1em;
-            color: #d32f2f;
-        }
-        .buttons {
+        .nav-buttons {
             display: flex;
-            flex-direction: column;
             gap: 15px;
-            margin-top: 30px;
+            margin: 30px 0 20px;
         }
-        .btn {
+        .nav-btn {
+            flex: 1;
             display: block;
             padding: 16px;
             border-radius: 8px;
@@ -92,21 +78,15 @@
             font-weight: bold;
             text-align: center;
             transition: all 0.3s ease;
-        }
-        .btn-navi {
             background-color: #1a3d6d;
             color: white;
+            border: none;
+            cursor: pointer;
         }
-        .btn-share {
+        .nav-btn.wechat {
             background-color: #07c160;
-            color: white;
         }
-        .btn-call {
-            background-color: #f0f7ff;
-            color: #1a3d6d;
-            border: 2px solid #1a3d6d;
-        }
-        .btn:hover {
+        .nav-btn:hover {
             opacity: 0.9;
             transform: translateY(-2px);
         }
@@ -115,11 +95,10 @@
             color: #999;
             font-size: 0.85em;
         }
-        .tip {
+        .cooperate {
             font-size: 0.8em;
             color: #666;
-            margin-top: 5px;
-            text-align: center;
+            margin-top: 15px;
         }
     </style>
 </head>
@@ -131,183 +110,142 @@
             <div class="slogan">诚挚邀请您光临</div>
         </div>
 
-        <div class="details">
-            <!-- 客户信息区域 -->
-            <div class="guest-info">
-                <div class="detail-item">
-                    <span class="label">贵宾姓名</span>
-                    <span class="value" id="displayName">尊敬的客户</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">预订日期</span>
-                    <span class="value" id="displayDate">2026-01-15</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">就餐时间</span>
-                    <span class="value" id="displayTime">晚餐 18:30</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">预订房间</span>
-                    <span class="value" id="displayRoom">钓鱼城</span>
-                </div>
+        <div class="info-section">
+            <!-- 客户信息 -->
+            <div class="info-row">
+                <div class="info-label">预订日期</div>
+                <div class="info-value" id="date">2026-01-15</div>
             </div>
-
-            <!-- 餐厅信息区域 -->
-            <div class="detail-item">
-                <span class="label">餐厅地址</span>
-                <span class="value" id="displayAddress">福州市鼓楼区八一七中路123号</span>
+            <div class="info-row">
+                <div class="info-label">就餐时间</div>
+                <div class="info-value" id="time">晚餐 18:30</div>
             </div>
-            <div class="detail-item">
-                <span class="label">餐厅电话</span>
-                <span class="value" id="displayPhone">0591-83796018</span>
+            <div class="info-row">
+                <div class="info-label">预订房间</div>
+                <div class="info-value" id="room">钓鱼城</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">餐厅地址</div>
+                <div class="info-value" id="address">福州市鼓楼区八一七中路123号</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">餐厅电话</div>
+                <div class="info-value" id="phone">0591-83796018</div>
             </div>
         </div>
 
-        <!-- 导航按钮区域 -->
-        <div class="buttons">
-            <!-- 关键修改：导航按钮 -->
-            <a href="javascript:void(0);" class="btn btn-navi" onclick="openNavigation()">
-                🗺️ 一键导航至餐厅
-            </a>
-            <a href="javascript:void(0);" class="btn btn-call" onclick="copyPhone()">
-                📞 一键复制联系电话
-            </a>
-            <a href="javascript:void(0);" class="btn btn-share" onclick="shareInvitation()">
-                💌 分享给朋友
-            </a>
+        <!-- 导航按钮区域（完全按图片样式） -->
+        <div class="nav-buttons">
+            <!-- 方案一：最简单 - 直接打开地图搜索页面 -->
+            <button class="nav-btn" onclick="openMapSearch()">
+                餐厅导航
+            </button>
+            
+            <!-- 方案二：微信内优化 - 打开腾讯地图 -->
+            <button class="nav-btn wechat" onclick="openWeChatMap()">
+                微信导航
+            </button>
         </div>
-        <div class="tip">点击"一键导航"将打开您手机上的地图应用</div>
 
-        <div class="footer">
-            <p>【您的餐厅名】 敬上</p>
+        <!-- 合作方信息（完全按图片样式） -->
+        <div class="cooperate">
+            迅手提供运营支持
         </div>
     </div>
 
     <script>
-        // 获取URL参数并填充到页面
+        // 获取URL参数并填充页面
         function getUrlParams() {
             const params = new URLSearchParams(window.location.search);
             return {
-                name: params.get('name') || '尊敬的客户',
+                name: params.get('name') || '',
                 date: params.get('date') || '2026-01-15',
                 time: params.get('time') || '晚餐 18:30',
                 room: params.get('room') || '钓鱼城'
             };
         }
-
-        // 页面加载时填充数据
-        function initInvitation() {
+        
+        // 页面初始化
+        window.onload = function() {
             const params = getUrlParams();
             
-            // 设置页面标题
-            document.title = `${params.name} - 用餐邀请函`;
+            // 填充数据
+            if (params.date) document.getElementById('date').textContent = params.date;
+            if (params.time) document.getElementById('time').textContent = params.time;
+            if (params.room) document.getElementById('room').textContent = params.room;
+            if (params.name) {
+                document.querySelector('.slogan').textContent = `${params.name}，诚挚邀请您光临`;
+            }
+        };
+        
+        // 最简单的导航方案：直接在地图中搜索餐厅地址
+        function openMapSearch() {
+            // 请在这里填写您的餐厅地址
+            const restaurantName = "福州川和李记";
+            const restaurantAddress = "福州市鼓楼区八一七中路123号";
             
-            // 填充数据到页面
-            document.getElementById('displayName').textContent = params.name;
-            document.getElementById('displayDate').textContent = params.date;
-            document.getElementById('displayTime').textContent = params.time;
-            document.getElementById('displayRoom').textContent = params.room;
+            // 创建搜索关键词（餐厅名+地址）
+            const searchKeyword = `${restaurantName} ${restaurantAddress}`;
             
-            // 可以在这里设置您餐厅的固定信息
-            document.getElementById('displayAddress').textContent = '福州市鼓楼区八一七中路123号';
-            document.getElementById('displayPhone').textContent = '0591-83796018';
-        }
-
-        // 核心功能：打开导航
-        function openNavigation() {
-            // 请替换为您餐厅的实际经纬度
-            const restaurantLat = 26.02;   // 餐厅纬度
-            const restaurantLng = 119.30;  // 餐厅经度
-            const restaurantName = encodeURIComponent("福州川和李记");
-            const restaurantAddress = encodeURIComponent("福州市鼓楼区八一七中路123号");
+            // 编码搜索关键词
+            const encodedSearch = encodeURIComponent(searchKeyword);
             
-            // 生成通用URL，兼容多种地图应用 [3,6](@ref)
-            const urls = {
-                // 高德地图 (iOS/Android)
-                amap: `iosamap://navi?sourceApplication=web&poiname=${restaurantName}&lat=${restaurantLat}&lon=${restaurantLng}&dev=0&style=2`,
-                // 百度地图
-                baidu: `bdapp://map/direction?destination=${restaurantName}&destination_region=福州&mode=driving&src=webapp.baidu.openAPIdemo`,
-                // 腾讯地图
-                qqmap: `qqmap://map/routeplan?type=drive&to=${restaurantName}&tocoord=${restaurantLat},${restaurantLng}&referer=OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77`,
-                // 通用地图链接，作为备选
-                universal: `https://uri.amap.com/navigation?to=${restaurantLng},${restaurantLat},${restaurantName}&callnative=1`
-            };
-            
-            // 尝试打开本地地图应用
-            const openMapApp = function() {
-                // 判断设备类型
-                const isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-                const isAndroid = /Android/.test(navigator.userAgent);
+            // 同时提供多种地图选择，让用户手机自动选择
+            const maps = [
+                // 高德地图（最常用）
+                `https://m.amap.com/search?query=${encodedSearch}`,
                 
-                if (isiOS) {
-                    // iOS设备优先尝试高德地图
-                    window.location.href = urls.amap;
-                    // 如果高德未安装，5秒后跳转通用页面
-                    setTimeout(function() {
-                        window.location.href = urls.universal;
-                    }, 5000);
-                } else if (isAndroid) {
-                    // Android设备直接尝试高德
-                    window.location.href = urls.amap;
-                    // 备用方案
-                    setTimeout(function() {
-                        window.location.href = `geo:${restaurantLat},${restaurantLng}?q=${restaurantAddress}`;
-                    }, 500);
-                } else {
-                    // 其他设备使用通用链接
-                    window.location.href = urls.universal;
-                }
-            };
+                // 百度地图
+                `https://map.baidu.com/mobile/webapp/search/search/qt=s&wd=${encodedSearch}`,
+                
+                // 腾讯地图
+                `https://apis.map.qq.com/uri/v1/search?keyword=${encodedSearch}&region=福州`
+            ];
             
-            // 执行打开地图应用
-            openMapApp();
+            // 尝试打开最常用的地图（高德）
+            window.location.href = maps[0];
         }
-
-        // 复制电话号码功能
-        function copyPhone() {
-            const phoneNum = document.getElementById('displayPhone').innerText;
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(phoneNum).then(() => {
-                    alert('联系电话已复制到剪贴板：' + phoneNum);
-                }).catch(err => {
-                    fallbackCopyText(phoneNum);
-                });
+        
+        // 微信内优化的导航方案
+        function openWeChatMap() {
+            // 请在这里填写您的餐厅地址
+            const restaurantName = "福州川和李记";
+            const restaurantAddress = "福州市鼓楼区八一七中路123号";
+            
+            // 检测是否在微信内
+            const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
+            
+            if (isWeChat) {
+                // 在微信内，使用腾讯地图（微信内置地图）
+                const searchKeyword = encodeURIComponent(`${restaurantName} ${restaurantAddress}`);
+                window.location.href = `https://apis.map.qq.com/uri/v1/search?keyword=${searchKeyword}&region=福州`;
             } else {
-                fallbackCopyText(phoneNum);
+                // 不在微信内，提示用户
+                alert('请在微信中打开以获得最佳导航体验');
+                
+                // 还是提供普通地图搜索
+                openMapSearch();
             }
         }
         
-        // 兼容老浏览器的复制方法
-        function fallbackCopyText(text) {
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            document.body.appendChild(textArea);
-            textArea.select();
-            try {
-                document.execCommand('copy');
-                alert('联系电话已复制到剪贴板：' + text);
-            } catch (err) {
-                alert('复制失败，请手动复制：' + text);
-            }
-            document.body.removeChild(textArea);
+        // 备用方案：如果上述方法都不行，使用这个超级简单的方法
+        function openSimpleMap() {
+            // 请在这里填写您的餐厅地址
+            const restaurantAddress = "福州市鼓楼区八一七中路123号";
+            
+            // 最简单的方法：直接打开百度地图搜索
+            window.location.href = `https://map.baidu.com/search/${encodeURIComponent(restaurantAddress)}`;
         }
         
-        // 分享功能
-        function shareInvitation() {
-            if (navigator.share) {
-                navigator.share({
-                    title: '用餐邀请函 - 福州川和李记',
-                    text: '诚邀您前来用餐',
-                    url: window.location.href
-                });
-            } else {
-                alert('请点击浏览器右上角的分享按钮，或复制链接发送给朋友。');
-            }
-        }
-        
-        // 页面加载时初始化
-        window.onload = initInvitation;
+        // 如果需要，可以在这里添加一个备用的简单导航按钮（调试用）
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     // 可以添加第三个按钮作为备用
+        //     // const backupBtn = document.createElement('button');
+        //     // backupBtn.className = 'nav-btn';
+        //     // backupBtn.textContent = '备用导航';
+        //     // backupBtn.onclick = openSimpleMap;
+        //     // document.querySelector('.nav-buttons').appendChild(backupBtn);
+        // });
     </script>
 </body>
 </html>
-
